@@ -1,4 +1,4 @@
-import bs4, requests, pprint, re, sys, pyperclip, webbrowser, lxml
+import bs4, requests, pprint, re, sys, pyperclip, webbrowser, lxml, docx
 
 headers = {
     'User-agent':
@@ -53,20 +53,34 @@ if len(ingredients) > 0:
     pprint.pprint(ingr)
     pprint.pprint(instr)
 
-
-    file = open('C:\\Users\\maxho\\Documents\\Recipes\\' + filename + '.txt', 'w')
+    filepath = 'C:\\Users\\maxho\\Documents\\Recipes'
+    doc = docx.Document(filepath + '\\Recipes.docx')
+    doc.add_page_break()
+    
+    file = open(filepath + '\\' + filename + '.txt', 'w')
     file.write(header[0].text + '\n')
-    file.write(recipeURL + '\n\n')
+    file.write(recipeURL + '\n')
     file.write('Ingredients:\n')
+
+    doc.add_heading(header[0].text, 0)
+    doc.add_paragraph(recipeURL + '\n\n')
+    doc.add_heading('Ingredients:', 2)
 
     for item in ingr:
         file.write('-' + item + '\n')
+        doc.add_paragraph(item, style='Bullet')
+        
 
     file.write('\nInstructions:\n')
+    doc.add_heading('\nInstructions:', 2)
+    
 
     for item in instr:
         file.write('-' + item + '\n')
-
+        doc.add_paragraph(item, style='Bulletalt')
+        
     file.close()
+    doc.save(filepath + '\\Recipes.docx')
+    
 else:
     print('No ingredients found, try again')
