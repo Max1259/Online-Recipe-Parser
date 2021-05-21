@@ -1,16 +1,17 @@
-import bs4, requests, pprint, re, sys, pyperclip, webbrowser, lxml, docx
+import bs4, requests, pprint, re, sys, pyperclip, webbrowser, lxml, docx, os
 
 headers = {
     'User-agent':
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19582"
 }
 
-sys.argv
-filename = ''
-if len(sys.argv) != 0:
-    filename = ' '.join(sys.argv[1:])
-else:
-    filename = pyperclip.paste()
+##sys.argv
+##filename = ''
+##if len(sys.argv) != 0:
+##    filename = ' '.join(sys.argv[1:])
+##else:
+##    filename = input("Search for a recipe: ")
+filename = input("Search for a recipe: ")
 
 url = 'http://www.google.com/search?q=' + filename + '+recipe'
 
@@ -33,7 +34,7 @@ instructions = []
 for item in elems:
     if item.text == 'Ingredients':
         ingredients = item.find_next(re.compile(r'[ou]l'))
-    if item.text == 'Instructions' or item.text == 'Preparation' or item.text == 'Directions':
+    if item.text == 'Instructions' or item.text == 'Preparation' or item.text == 'Directions' or item.text == 'Method':
         instructions = item.find_next(re.compile(r'[ou]l'))
 
 if len(ingredients) > 0: 
@@ -48,14 +49,21 @@ if len(ingredients) > 0:
         for li in instructions.find_all('li'):
             item = li.text.encode('ascii', 'ignore')
             item = item.decode('utf-8')
-            instr.append(item.strip())
+            item = item.strip()
+            item = item.replace('\n', ' ')
+            instr.append(item)
+            
+            
 
     pprint.pprint(ingr)
     pprint.pprint(instr)
 
-    filepath = 'C:\\Users\\maxho\\Documents\\Recipes'
+    filepath = os.path.join(os.path.expandvars("%userprofile%"), "documents\\Recipes")
 
-    if (filepath + '\\Recipes.docx').isfile():
+    if not os.path.isdir(filepath):
+        os.mkdir(filepath)
+
+    if os.path.isfile(filepath + '\\Recipes.docx'):
         doc = docx.Document(filepath + '\\Recipes.docx')
         doc.add_page_break()
     else:
