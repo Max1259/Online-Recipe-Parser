@@ -74,7 +74,7 @@ if len(ingredients) > 0:
     file.write(recipeURL + '\n')
     file.write('Ingredients:\n')
 
-    doc.add_heading(header[0].text, 0)
+    doc.add_heading(header[0].text, 1)
     doc.add_paragraph(recipeURL + '\n\n')
     doc.add_heading('Ingredients:', 2)
 
