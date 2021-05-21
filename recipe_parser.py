@@ -54,8 +54,12 @@ if len(ingredients) > 0:
     pprint.pprint(instr)
 
     filepath = 'C:\\Users\\maxho\\Documents\\Recipes'
-    doc = docx.Document(filepath + '\\Recipes.docx')
-    doc.add_page_break()
+
+    if (filepath + '\\Recipes.docx').isfile():
+        doc = docx.Document(filepath + '\\Recipes.docx')
+        doc.add_page_break()
+    else:
+        doc = docx.Document()
     
     file = open(filepath + '\\' + filename + '.txt', 'w')
     file.write(header[0].text + '\n')
@@ -69,11 +73,9 @@ if len(ingredients) > 0:
     for item in ingr:
         file.write('-' + item + '\n')
         doc.add_paragraph(item, style='Bullet')
-        
 
     file.write('\nInstructions:\n')
     doc.add_heading('\nInstructions:', 2)
-    
 
     for item in instr:
         file.write('-' + item + '\n')
